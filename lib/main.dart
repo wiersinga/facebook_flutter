@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,33 +13,78 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'Flutter Facebook',
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text("Profile"),
+          centerTitle: true,
+          elevation: 2,
+          shadowColor: Colors.blueAccent,
+        ),
+        body: Column(
+          children: [
+            Container(
+              height: 180,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdZG6SCpYUZvdJgto4OPoq0p-_Icme3wnKJg&usqp=CAU'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            CircleAvatar(
+              radius: 80,
+              child: Image.network("https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=600"),
+            ),
+            const Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                  child: const Text(
+                'Olfa Wiersinga',
+                    textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              )),
+                Expanded(child: const Text(
+                  'Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.blueGrey,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 12,
+
+                  ),
+
+                )),
+              ],
+         /*     height: 250,
+              child: const Center(
+                child: Text(
+                  'Olfa Wiersinga',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+
+              )*/
+
+            ),
+          ],
+        ),
+      )
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+/*  const MyHomePage({super.key, required this.title});*/
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -48,7 +95,7 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
+  /*final String title;*/
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -84,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        /*title: Text(widget.title),*/
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
