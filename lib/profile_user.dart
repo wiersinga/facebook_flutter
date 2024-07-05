@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:facebook_flutter/models/book.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -18,8 +17,13 @@ class ProfilePageState extends State<ProfilePage> {
   BookList bookList = BookList(docs: []);
   bool isLoading = true;
   String errorMessage = '';
-
   String age = "";
+  String gender = "";
+
+  bool isManChecked = false;
+  bool isFemaleChecked = false;
+
+  double _currentSliderValue = 0;
 
   late TextEditingController firstNameTextEditingController;
   late TextEditingController lastNameTextEditingController;
@@ -37,6 +41,26 @@ class ProfilePageState extends State<ProfilePage> {
     firstNameTextEditingController.dispose();
     lastNameTextEditingController.dispose();
     super.dispose();
+  }
+
+  void _handleManCheckBoxChange(bool? value){
+    setState(() {
+      isManChecked = value!;
+      if (isManChecked) {
+        isFemaleChecked = false;
+        gender = "man";
+      }
+    });
+  }
+
+  void _handleFemaleCheckBoxChange(bool? value){
+    setState(() {
+      isFemaleChecked= value!;
+      if (isFemaleChecked){
+        isManChecked = false;
+        gender = "female";
+      }
+    });
   }
 
   Future<BookList> fetchDataResponse() async {
@@ -109,29 +133,53 @@ class ProfilePageState extends State<ProfilePage> {
         children: [
           Column(
             children: [
-              CircleAvatar(
-                radius: 80,
-                backgroundImage: NetworkImage("https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=600"),
+              Container(
+                color: Colors.greenAccent,
+                height: 600,
+                width: double.infinity,// Set the background color here
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    const CircleAvatar(
+                      radius: 80,
+                      backgroundImage: NetworkImage("https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=600"),
+                    ),
+                    Text('My name is :' + ' ' + firstNameTextEditingController.text+ '  ' +lastNameTextEditingController.text, style: TextStyle(fontSize: 22)),
+                    Text( 'My age is : ' +age, style: TextStyle(fontSize: 22)),
+                    Text('I `am a :' + gender, style: TextStyle(fontSize: 22)),
+                    Text('I`m measuring: ' +
+                        _currentSliderValue.toString(),
+                    style: TextStyle(fontSize: 22)
+                    ),
+                    Row(
+                      children: [
+                        const Text('My favorite books :'),
+                        Expanded(
+                            child: SizedBox(
+                              height: 150,
+                              child: buildBody(),
+                            ))
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              Text(firstNameTextEditingController.text),
-              Text(lastNameTextEditingController.text),
-              Text(age),
             ],
           ),
           Column(
             children: [
               TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Prénom',
+                  labelText: 'First name',
                 ),
                 controller: firstNameTextEditingController,
                 onChanged: ((value)=> setState(() {})),
               ),
               TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Nom',
+                  labelText: 'Last name',
                 ),
                 controller: lastNameTextEditingController,
                 onChanged: ((value)=> setState(() {})),
@@ -149,9 +197,66 @@ class ProfilePageState extends State<ProfilePage> {
                   })
               ),
               ),
-              Container(
-                height: 300,
-                child: buildBody(),
+              /*Row(
+                children: [
+                  const Text('My favorite books :'),
+                  Expanded(
+                      child: SizedBox(
+                    height: 150,
+                    child: buildBody(),
+                  ))
+                ],
+              ),*/
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 50
+                      ),
+                      const Text(
+                        'Female',
+                        style: TextStyle(fontSize: 17.0),
+                      ),
+                      Checkbox(
+                          value: isFemaleChecked,
+                          onChanged: _handleFemaleCheckBoxChange
+                          ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(
+                          width: 50
+                      ),
+                      const Text(
+                        'Man',
+                        style: TextStyle(fontSize: 17.0),
+                      ),
+                      Checkbox(
+                          value: isManChecked,
+                          onChanged: _handleManCheckBoxChange
+                      )
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Text("I measure ..."),
+                      Slider(
+                      value: _currentSliderValue,
+                      max: 200,
+                      divisions: 200,
+                      label: _currentSliderValue.round().toString(),
+                      onChanged: (double value) {
+                        setState(() {
+                          _currentSliderValue = value!;
+                        });
+                      }
+                      ),
+                    ],
+                  )
+
+                ],
               ),
               ],
           ),

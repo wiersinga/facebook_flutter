@@ -27,20 +27,10 @@ class BookList {
 
   factory BookList.fromJson(Map<String, dynamic> json) => BookList(
     docs: json["docs"] == null ? [] : List<Book>.from(json["docs"]!.map((x) => Book.fromJson(x))),
-    total: json["total"],
-    limit: json["limit"],
-    offset: json["offset"],
-    page: json["page"],
-    pages: json["pages"],
   );
 
   Map<String, dynamic> toJson() => {
     "docs": docs == null ? [] : List<dynamic>.from(docs!.map((x) => x.toJson())),
-    "total": total,
-    "limit": limit,
-    "offset": offset,
-    "page": page,
-    "pages": pages,
   };
 }
 
