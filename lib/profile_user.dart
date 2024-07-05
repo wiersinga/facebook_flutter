@@ -1,17 +1,23 @@
 import 'dart:ui';
-
+import 'package:facebook_flutter/models/book.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ProfilePage extends StatefulWidget{
-  /*const ProfilePage({super.key});*//**/
+
   @override
   ProfilePageState createState()=> ProfilePageState();
 
 }
 
+
 class ProfilePageState extends State<ProfilePage> {
   List<String> ages = <String>['18','19','20','21','22','23','24','25','26','27','28'];
+  BookList bookList = BookList(docs: []);
+  bool isLoading = true;
+  String errorMessage = '';
 
   String age = "";
 
@@ -23,7 +29,7 @@ class ProfilePageState extends State<ProfilePage> {
     super.initState();
     firstNameTextEditingController = TextEditingController();
     lastNameTextEditingController = TextEditingController();
-
+    fetchData();
   }
 
   @override
@@ -31,6 +37,61 @@ class ProfilePageState extends State<ProfilePage> {
     firstNameTextEditingController.dispose();
     lastNameTextEditingController.dispose();
     super.dispose();
+  }
+
+  Future<BookList> fetchDataResponse() async {
+    final response = await http.get(Uri.parse('https://the-one-api.dev/v2/book'));
+
+    await Future.delayed(Duration(seconds: 2));
+
+    if (response.statusCode == 200) {
+      /*Map<String, dynamic> jsonResponse = json.decode(response.body);*/
+      return BookList.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to load data from API');
+    }
+  }
+
+  Future<void> fetchData() async {
+    try {
+      var books = await fetchDataResponse();
+      setState(() {
+        bookList = books;
+        isLoading = false;
+      });
+    } catch (error) {
+      setState(() {
+        errorMessage = error.toString();
+        isLoading = false;
+      });
+    }
+  }
+
+  Widget buildBody(){
+    if (isLoading){
+      return Container(
+        child: CircularProgressIndicator(),
+      );
+    }
+    if (errorMessage.isNotEmpty){
+      return Container(
+        child: Text('Error: $errorMessage'),
+      );
+    }
+    if (bookList.docs!.isEmpty){
+      return Container(
+        child: Text('No items founs'),
+      );
+    }
+    return ListView.builder(
+      itemCount: bookList.docs!.length,
+      itemBuilder: (context, index){
+        return ListTile(
+          leading: Icon(Icons.label),
+          title: Text(bookList.docs![index].name ?? ''),
+        );
+      },
+    );
   }
 
   @override
@@ -87,6 +148,10 @@ class ProfilePageState extends State<ProfilePage> {
                     age = value!;
                   })
               ),
+              ),
+              Container(
+                height: 300,
+                child: buildBody(),
               ),
               ],
           ),
